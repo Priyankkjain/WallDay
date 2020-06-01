@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">WallDay</string>
+    <string name="push_notification_channel_title">Notification for the application</string>
+    <string name="no_network_available">Please check internet connection</string>
+    <string name="photo">Photo</string>
+    <string name="download">Download</string>
+    <string name="open_in_browser">Open In Browser</string>
+</resources>
