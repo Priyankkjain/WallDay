@@ -1,8 +1,11 @@
 package com.priyank.wallday.api.responsemodel
 
+import android.os.Parcelable
 import com.priyank.wallday.utils.Constants
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class PhotoItem(
 
     @Json(name = "urls")
@@ -36,8 +39,9 @@ data class PhotoItem(
     val likes: Int,
 
     var viewType: Int = Constants.VIEW_TYPE_RECYCLE_ITEM
-)
+) : Parcelable
 
+@Parcelize
 data class Urls(
 
     @Json(name = "small")
@@ -54,8 +58,9 @@ data class Urls(
 
     @Json(name = "full")
     val full: String? = null
-)
+) : Parcelable
 
+@Parcelize
 data class Links(
 
     @Json(name = "portfolio")
@@ -78,8 +83,9 @@ data class Links(
 
     @Json(name = "download_location")
     val downloadLocation: String? = null
-)
+) : Parcelable
 
+@Parcelize
 data class User(
 
     @Json(name = "total_photos")
@@ -120,8 +126,9 @@ data class User(
 
     @Json(name = "username")
     val username: String
-)
+) : Parcelable
 
+@Parcelize
 data class ProfileImage(
 
     @Json(name = "small")
@@ -132,4 +139,4 @@ data class ProfileImage(
 
     @Json(name = "medium")
     val medium: String? = null
-)
+) : Parcelable

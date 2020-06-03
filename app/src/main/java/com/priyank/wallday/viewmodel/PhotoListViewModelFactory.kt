@@ -6,11 +6,15 @@ import androidx.lifecycle.ViewModelProvider
 
 class PhotoListViewModelFactory constructor(
     private val clientID: String,
-    private val application: Application
+    private val application: Application,
+    private val isPhotoDetail: Boolean = false
 ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return PhotoListViewModel(clientID, application) as T
+        return if (isPhotoDetail)
+            PhotoDetailViewModel(clientID, application) as T
+        else
+            PhotoListViewModel(clientID, application) as T
     }
 
 }

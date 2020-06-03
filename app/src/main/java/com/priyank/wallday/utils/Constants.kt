@@ -1,18 +1,12 @@
 package com.priyank.wallday.utils
 
-/**
- * Here in this class there are constants for the preference keys, argument keys and any other constant used in the
- * application except the api constants which resides in the APIConstants.
- *
- * The Preference and Arguments key's value type is appended in the key name itself.
- * If it is integer key contains _INT at end.
- * If it is boolean key contains _BOOL at end.
- * If it is float key contains _FLOAT at end.
- * If it is long key contains _LONG at end.
- * Other than this every single key's value is String data type.
- */
 object Constants {
-    const val PUSH_NOTIFICATION_CHANNEL_ID = "PUSH_NOTIFICATION_CESANO"
+    const val PUSH_NOTIFICATION_CHANNEL_ID = "PUSH_NOTIFICATION_WALL_DAY"
+
+    const val EXTRA_PHOTO_ITEM = "PHOTO_ITEM"
+    const val EXTRA_IS_IMAGE_SELECTED = "IS_IMAGE_SELECTED"
+    const val EXTRA_SELECT_IMAGE_WEEK_POSITION = "SELECT_IMAGE_WEEK_POSITION"
+    const val EXTRA_SELECTED_IMAGE_PATH = "EXTRA_SELECTED_IMAGE_PATH"
 
     const val MINIMUM_DISTANCE_TO_MOVE_MARKER = 20
     const val GEO_FENCE_RADIUS_IN_METERS = 500.0f
@@ -70,7 +64,7 @@ object Constants {
 
     //region EXTRAS
     const val EXTRA_COMING_FROM_INT = "COMING_FROM"
-    const val EXTRA_PHONE_NUMBER = "PHONE_NUMBER"
+
     const val EXTRA_PAYMENT_BROADCAST = "com.cesano.payment.broadcast"
     const val EXTRA_PAYMENT_ID = "PAYMENT_ID"
     const val EXTRA_BIKE_BOOKING_ID_INT = "BIKE_BOOKING_ID"
@@ -108,9 +102,11 @@ object Constants {
     //region Bike Status
     //This status will come when we have booked the bike but is yet to pickup.
     const val STATUS_BIKE_BOOKED = 1
+
     //This status will come when the user has picked up the bike.
     //Even if user doesn't pick-up the bike the charge for the bike will be considered.
     const val STATUS_BIKE_PICKED_UP = 2
+
     //This status will come when the user has dropped off the bike.
     const val STATUS_BIKE_DROP_OFF = 3
     //endregion

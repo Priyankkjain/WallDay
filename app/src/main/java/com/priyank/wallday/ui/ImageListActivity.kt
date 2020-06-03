@@ -1,10 +1,15 @@
 package com.priyank.wallday.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.priyank.wallday.R
@@ -17,6 +22,7 @@ import com.priyank.wallday.api.responsemodel.User
 import com.priyank.wallday.base.APIResource
 import com.priyank.wallday.base.Status
 import com.priyank.wallday.custom.PaginationRecyclerViewScrollListener
+import com.priyank.wallday.custom.showToast
 import com.priyank.wallday.databinding.ActivityImageListBinding
 import com.priyank.wallday.utils.Constants
 import com.priyank.wallday.viewmodel.PhotoListViewModel
@@ -25,6 +31,7 @@ import com.priyank.wallday.viewmodel.PhotoListViewModelFactory
 class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickListener {
 
     private lateinit var binding: ActivityImageListBinding
+    private var selectedImagePosition = 0
 
     private val bikeListViewModel by viewModels<PhotoListViewModel> {
         PhotoListViewModelFactory(getString(R.string.unsplash_key), application)
@@ -44,6 +51,9 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_image_list)
 
+        selectedImagePosition =
+            intent.getIntExtra(Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION, 0)
+
         bikeListRequestModel = PhotosListRequestModel(pageNo)
 
         bikeList = mutableListOf()
@@ -55,7 +65,9 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         binding.photosRv.layoutManager = staggeredGridLayoutManager
 
-        bikeListViewModel.photoListResponse.observe(this, ::handleBikeListResponse)
+        bikeListViewModel.photoListResponse.observe(this) {
+            handlePhotoListResponse(it)
+        }
 
         endlessRecyclerViewScrollListener =
             object : PaginationRecyclerViewScrollListener(binding.photosRv.layoutManager!!) {
@@ -64,7 +76,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                         pageNo++
                         bikeListRequestModel.page = pageNo
                         isLoadingData = true
-                        callBikeListAPI()
+                        callPhotoListAPI()
                     }
                 }
             }
@@ -76,18 +88,18 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
             bikeListRequestModel.page = pageNo
             bikeList.clear()
             bikeListAdapter.notifyDataSetChanged()
-            callBikeListAPI()
+            callPhotoListAPI()
         }
 
         if (!isLastPage)
-            callBikeListAPI()
+            callPhotoListAPI()
     }
 
-    private fun callBikeListAPI() {
+    private fun callPhotoListAPI() {
         bikeListViewModel.callPhotoListAPI(bikeListRequestModel)
     }
 
-    private fun handleBikeListResponse(response: APIResource<PhotoItem>) {
+    private fun handlePhotoListResponse(response: APIResource<List<PhotoItem>>) {
 
         if (binding.swipeRefresh.isRefreshing)
             binding.swipeRefresh.isRefreshing = false
@@ -104,8 +116,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                 if (pageNo == 1) {
                     bikeList.clear()
                     bikeListAdapter.notifyDataSetChanged()
-                    binding.noDataFoundTV.visibility = View.VISIBLE
-                    binding.bikesRV.visibility = View.GONE
+                    binding.photosRv.visibility = View.GONE
                 } else {
                     removeShimmerItemsFromList()
                 }
@@ -120,21 +131,16 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
             else -> {
                 removeShimmerItemsFromList()
 
-                val data = response.data!!
-                val apiList = data.data
+                val apiList = response.data!!
 
                 if (apiList.isEmpty() && pageNo == 1) {
-                    binding.noDataFoundTV.visibility = View.VISIBLE
-                    binding.bikesRV.visibility = View.GONE
+                    binding.photosRv.visibility = View.GONE
                     return
                 }
 
                 val apiListSize = apiList.size
                 bikeList.addAll(apiList)
                 bikeListAdapter.notifyItemRangeInserted(bikeList.size - apiListSize, apiListSize)
-
-                isLastPage = bikeList.size == data.count
-
                 isLoadingData = false
             }
         }
@@ -164,7 +170,17 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         repeat(Constants.API_OFFSET_ITEM) {
             bikeShimmerList.add(
                 PhotoItem(
-                    Urls(),"",0,"","", Links(),"", User(0,)
+                    Urls(),
+                    "",
+                    0,
+                    "",
+                    "",
+                    Links(),
+                    "",
+                    User(0, "", "", 0, "", null, "", "", 0, null, "", "", ""),
+                    0,
+                    0,
+                    viewType = Constants.VIEW_TYPE_SHIMMER_ITEM
                 )
             )
         }
@@ -172,7 +188,42 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
     }
 
 
-    override fun onBikeImageClick(view: View, item: PhotoItem, position: Int) {
-
+    override fun onImageClick(view: View, item: PhotoItem, position: Int) {
+        val intent = Intent(this, ImageDetailActivity::class.java)
+        intent.putExtra(Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION, position)
+        intent.putExtra(Constants.EXTRA_PHOTO_ITEM, item)
+        imageSelectResult.launch(intent)
     }
+
+    private val imageSelectResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    val isImageSelected =
+                        data.getBooleanExtra(Constants.EXTRA_IS_IMAGE_SELECTED, false)
+                    if (isImageSelected) {
+                        val path =
+                            data.getStringExtra(Constants.EXTRA_SELECTED_IMAGE_PATH)
+                        path?.let {
+                            val intent = Intent()
+                            intent.putExtra(
+                                Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION,
+                                selectedImagePosition
+                            )
+                            intent.putExtra(
+                                Constants.EXTRA_SELECTED_IMAGE_PATH,
+                                it
+                            )
+                            intent.putExtra(
+                                Constants.EXTRA_IS_IMAGE_SELECTED,
+                                true
+                            )
+                            setResult(Activity.RESULT_OK, intent)
+                            finish()
+                        }
+                    }
+                }
+            }
+        }
 }

@@ -36,7 +36,7 @@ class PhotoListAdapter(private val data: List<PhotoItem>) :
             holder.itemView.setBackgroundColor(Color.parseColor(photo.color))
 
         holder.binding.root.setOnClickListener {
-            photoImageClickListener?.onBikeImageClick(it, photo, position)
+            photoImageClickListener?.onImageClick(it, photo, position)
         }
     }
 
@@ -47,7 +47,7 @@ class PhotoListAdapter(private val data: List<PhotoItem>) :
     inner class PhotoVH(val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root)
 
     interface PhotoImageClickListener {
-        fun onBikeImageClick(view: View, item: PhotoItem, position: Int)
+        fun onImageClick(view: View, item: PhotoItem, position: Int)
     }
 
     fun setPhotoImageClickListener(photoImageClickListener: PhotoImageClickListener) {
