@@ -1,6 +1,7 @@
 package com.priyank.wallday.ui
 
 import android.app.Activity
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -13,11 +14,16 @@ import androidx.lifecycle.observe
 import com.priyank.wallday.R
 import com.priyank.wallday.adapter.ImageWeekAdapter
 import com.priyank.wallday.base.Status
+import com.priyank.wallday.custom.getPreferenceValue
+import com.priyank.wallday.custom.savePreferenceValue
 import com.priyank.wallday.custom.showToast
 import com.priyank.wallday.database.ImageWeek
 import com.priyank.wallday.databinding.ActivityMainBinding
 import com.priyank.wallday.utils.Constants
 import com.priyank.wallday.viewmodel.ImageWeekViewModel
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListener {
 
@@ -27,10 +33,23 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
     private lateinit var imageWeekAdapter: ImageWeekAdapter
 
     private var imageWeekList = mutableListOf<ImageWeek>()
+    private var calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        val wallPaperChangingTime =
+            getPreferenceValue(Constants.PREF_WALL_PAPER_CHANGING_TIME, "15:00")
+        binding.wallPaperChangingTime.text =
+            getString(R.string.wall_paper_changing_time, wallPaperChangingTime)
+        SimpleDateFormat("HH:mm", Locale.US).parse(wallPaperChangingTime)?.let {
+            calendar.time = it
+        }
+        binding.wallPaperChangingTime.setOnClickListener {
+            showTimePicker()
+        }
+        changeTheAlarmManager()
 
         imageWeekAdapter = ImageWeekAdapter(this, imageWeekList)
         imageWeekAdapter.setImageWeekClickListener(this)
@@ -84,6 +103,27 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
                 }
             }
         }
+    }
+
+    private fun showTimePicker() {
+        val timePickerDialog = TimePickerDialog(this, { _, hourOfDay, minute ->
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            calendar.set(Calendar.MINUTE, minute)
+            val storeHour = if (hourOfDay < 10) "0$hourOfDay" else "$hourOfDay"
+            val storeMinute = if (minute < 10) "0$minute" else "$minute"
+            savePreferenceValue(Constants.PREF_WALL_PAPER_CHANGING_TIME, "$storeHour:$storeMinute")
+            binding.wallPaperChangingTime.text =
+                getString(R.string.wall_paper_changing_time, "$storeHour:$storeMinute")
+            changeTheAlarmManager()
+        }, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], false)
+        timePickerDialog.show()
+    }
+
+    private fun changeTheAlarmManager() {
+        /*val wallpaperManager =
+            WallpaperManager.getInstance(applicationContext)
+        val bitmap = BitmapFactory.decodeFile("")
+        wallpaperManager.setBitmap(bitmap)*/
     }
 
     override fun onSelectImageClick(item: ImageWeek, position: Int) {
