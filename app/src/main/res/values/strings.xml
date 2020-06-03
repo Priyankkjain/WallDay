@@ -6,6 +6,7 @@
     <string name="download">Download</string>
     <string name="open_in_browser">Open In Browser</string>
     <string name="wall_paper_changing_time">Wallpaper will change everyday at %s.</string>
+    <string name="wall_paper_error">Wallpaper cannot be loaded due to some error. Select new image to continue.</string>
     <string name="select_image">Select Image</string>
     <string name="downloading_image_by">Downloading image by %s</string>
 

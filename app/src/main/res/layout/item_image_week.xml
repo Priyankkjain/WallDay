@@ -47,6 +47,25 @@
                 app:layout_constraintTop_toBottomOf="@id/week_day_tv"
                 tools:visibility="gone" />
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/image_load_error"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="@string/wall_paper_error"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:fontFamily="@font/nunito_regular"
+                app:layout_constraintBottom_toTopOf="@+id/select_image"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/week_day_tv"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:visibility="visible" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/select_image"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -59,11 +78,23 @@
                 app:icon="@drawable/ic_baseline_center_focus_weak_24"
                 app:iconTint="@color/colorBlack"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/week_day_tv"
+                app:layout_constraintTop_toBottomOf="@+id/image_load_error"
                 app:strokeColor="@color/colorAccent"
                 app:strokeWidth="1dp" />
+
+            <ProgressBar
+                android:id="@+id/progress_circular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/week_day_tv" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

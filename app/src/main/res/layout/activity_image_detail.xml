@@ -45,7 +45,7 @@
             android:gravity="center"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:src="@{photoModel.user.name}"
+            android:text="@{photoModel.user.name}"
             android:textColor="@color/colorWhite"
             android:textSize="22sp"
             app:autoSizeMaxTextSize="22sp"
