@@ -15,9 +15,12 @@ class ImageWeekViewModel(private val applicationContext: Application) :
     AndroidViewModel(applicationContext) {
 
     private val repository: PhotoWeekRepository
-    val imagesWeek: LiveData<APIResource<List<ImageWeek>>>
     private val updateImageOfDayLiveData = MutableLiveData<ImageWeek>()
+    private val insertImageOfDayFirstTimeLiveData = MutableLiveData<List<ImageWeek>>()
+
+    val imagesWeek: LiveData<APIResource<List<ImageWeek>>>
     val updateImageOfDay: LiveData<APIResource<Int>>
+    val insertAllTheWeekDataFirstTime: LiveData<APIResource<List<Long>>>
 
     init {
         val imageDao = ImageRoomDatabase.getDatabase(applicationContext).imageDao()
@@ -26,10 +29,17 @@ class ImageWeekViewModel(private val applicationContext: Application) :
         updateImageOfDay = updateImageOfDayLiveData.switchMap {
             repository.updateImageOfDay(it)
         }
+        insertAllTheWeekDataFirstTime = insertImageOfDayFirstTimeLiveData.switchMap {
+            repository.insertAllTheImageFirstTime(it)
+        }
     }
 
     fun updateImageInWeek(imageWeek: ImageWeek) {
         updateImageOfDayLiveData.postValue(imageWeek)
+    }
+
+    fun addAllTheWeekImage(imageWeekList: List<ImageWeek>) {
+        insertImageOfDayFirstTimeLiveData.postValue(imageWeekList)
     }
 
     override fun onCleared() {

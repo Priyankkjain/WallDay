@@ -41,6 +41,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
     private lateinit var bikeList: MutableList<PhotoItem>
 
     private var pageNo = 1
+    private var maxPage = 50
     private lateinit var endlessRecyclerViewScrollListener: PaginationRecyclerViewScrollListener
     private var isLoadingData = false
     private var isLastPage = false
@@ -76,7 +77,11 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                         pageNo++
                         bikeListRequestModel.page = pageNo
                         isLoadingData = true
-                        callPhotoListAPI()
+                        if (pageNo != maxPage)
+                            callPhotoListAPI()
+                        else {
+                            isLastPage = true
+                        }
                     }
                 }
             }

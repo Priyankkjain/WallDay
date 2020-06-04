@@ -1,7 +1,10 @@
 package com.priyank.wallday.ui
 
 import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -19,7 +22,9 @@ import com.priyank.wallday.custom.savePreferenceValue
 import com.priyank.wallday.custom.showToast
 import com.priyank.wallday.database.ImageWeek
 import com.priyank.wallday.databinding.ActivityMainBinding
+import com.priyank.wallday.schedular.ExtendBikeBroadcastReceiver
 import com.priyank.wallday.utils.Constants
+import com.priyank.wallday.utils.Utils
 import com.priyank.wallday.viewmodel.ImageWeekViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,10 +45,10 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         val wallPaperChangingTime =
-            getPreferenceValue(Constants.PREF_WALL_PAPER_CHANGING_TIME, "15:00")
+            getPreferenceValue(Constants.PREF_WALL_PAPER_CHANGING_TIME, "12:00 AM")
         binding.wallPaperChangingTime.text =
             getString(R.string.wall_paper_changing_time, wallPaperChangingTime)
-        SimpleDateFormat("HH:mm", Locale.US).parse(wallPaperChangingTime)?.let {
+        SimpleDateFormat("HH:mm a", Locale.US).parse(wallPaperChangingTime)?.let {
             calendar.time = it
         }
         binding.wallPaperChangingTime.setOnClickListener {
@@ -81,7 +86,13 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
                 }
                 else -> {
                     imageWeekList.clear()
-                    imageWeekList.addAll(response.data!!)
+                    if (response.data.isNullOrEmpty()) {
+                        val weekModelsForFirstTime = Utils.getWeekModelsForFirstTime()
+                        imageWeekList.addAll(weekModelsForFirstTime)
+                        imageWeekViewModel.addAllTheWeekImage(imageWeekList)
+                    } else {
+                        imageWeekList.addAll(response.data)
+                    }
                     imageWeekAdapter.notifyDataSetChanged()
                 }
             }
@@ -103,27 +114,66 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
                 }
             }
         }
+
+        imageWeekViewModel.insertAllTheWeekDataFirstTime.observe(this) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+
+                }
+                Status.ERROR -> {
+                    response.message?.let {
+                        showToast(it)
+                    }
+                }
+                else -> {
+
+                }
+            }
+        }
     }
 
     private fun showTimePicker() {
         val timePickerDialog = TimePickerDialog(this, { _, hourOfDay, minute ->
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
-            val storeHour = if (hourOfDay < 10) "0$hourOfDay" else "$hourOfDay"
-            val storeMinute = if (minute < 10) "0$minute" else "$minute"
-            savePreferenceValue(Constants.PREF_WALL_PAPER_CHANGING_TIME, "$storeHour:$storeMinute")
+
+            var selectedHour = calendar[Calendar.HOUR]
+            val selectedMinute = calendar[Calendar.MINUTE]
+            val selectedPeriod = calendar[Calendar.AM_PM]
+            if (selectedHour == 0)
+                selectedHour = 12
+
+            val storeHour = String.format("%02d", selectedHour)
+            val storeMinute = String.format("%02d", selectedMinute)
+            val storeAMPM = if (selectedPeriod == Calendar.AM) "AM" else "PM"
+
+            savePreferenceValue(
+                Constants.PREF_WALL_PAPER_CHANGING_TIME,
+                "$storeHour:$storeMinute $storeAMPM"
+            )
             binding.wallPaperChangingTime.text =
-                getString(R.string.wall_paper_changing_time, "$storeHour:$storeMinute")
+                getString(R.string.wall_paper_changing_time, "$storeHour:$storeMinute $storeAMPM")
+
             changeTheAlarmManager()
         }, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], false)
         timePickerDialog.show()
     }
 
     private fun changeTheAlarmManager() {
-        /*val wallpaperManager =
-            WallpaperManager.getInstance(applicationContext)
-        val bitmap = BitmapFactory.decodeFile("")
-        wallpaperManager.setBitmap(bitmap)*/
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+        val intent = Intent(this, ExtendBikeBroadcastReceiver::class.java)
+        intent.action = Constants.INTENT_ACTION_WALL_PAPER_CHANGE
+        val pendingIntent =
+            PendingIntent.getBroadcast(this, 101, intent, PendingIntent.FLAG_NO_CREATE)
+        if (pendingIntent != null && alarmManager != null) {
+            alarmManager.cancel(pendingIntent)
+        }
+        alarmManager?.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
     }
 
     override fun onSelectImageClick(item: ImageWeek, position: Int) {

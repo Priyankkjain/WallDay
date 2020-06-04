@@ -15,8 +15,10 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.observe
+import com.priyank.wallday.BuildConfig
 import com.priyank.wallday.R
 import com.priyank.wallday.api.responsemodel.PhotoItem
 import com.priyank.wallday.base.Status
@@ -25,6 +27,7 @@ import com.priyank.wallday.databinding.ActivityImageDetailBinding
 import com.priyank.wallday.utils.Constants
 import com.priyank.wallday.viewmodel.PhotoDetailViewModel
 import com.priyank.wallday.viewmodel.PhotoListViewModelFactory
+import java.io.File
 
 
 class ImageDetailActivity : AppCompatActivity() {
@@ -36,7 +39,11 @@ class ImageDetailActivity : AppCompatActivity() {
     private val downloadManager by lazy {
         getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     }
+    private var shouldDownloadEnabled: Boolean = true
+    private var enqueueID: Long = -1
 
+    private var isImageSelected: Boolean = false
+    private var imageFile: File? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +56,8 @@ class ImageDetailActivity : AppCompatActivity() {
         binding.photoModel = photoItem
 
         binding.selectPhoto.setOnClickListener {
-            val intent = Intent()
-            intent.putExtra(Constants.EXTRA_IS_IMAGE_SELECTED, true)
-            setResult(Activity.RESULT_OK, intent)
-            onBackPressed()
+            isImageSelected = true
+            photoDetailViewModel.callDownloadTrackerAPI(binding.photoModel.links.downloadLocation!!)
         }
 
         photoDetailViewModel.downLoadTrackerResponse.observe(this) { response ->
@@ -82,6 +87,11 @@ class ImageDetailActivity : AppCompatActivity() {
             onDownloadComplete,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        menu.findItem(R.id.menu_download).isEnabled = shouldDownloadEnabled
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -115,18 +125,50 @@ class ImageDetailActivity : AppCompatActivity() {
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
         request.setTitle(getString(R.string.app_name))
         request.setMimeType("image/*")
-        request.setDestinationInExternalFilesDir(
-            this,
-            Environment.DIRECTORY_DOWNLOADS,
-            photoModel.user.name.plus("_" + photoModel.id).plus(".jpg")
-        )
-        val enqueueID = downloadManager.enqueue(request)
+        if (isImageSelected) {
+            imageFile = createFile()
+            val photoURI: Uri =
+                FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, imageFile!!)
+            request.setDestinationUri(photoURI)
+        } else {
+            request.setDestinationInExternalFilesDir(
+                this,
+                Environment.DIRECTORY_DOWNLOADS,
+                photoModel.user.name.plus("_" + System.currentTimeMillis()).plus(".jpg")
+            )
+        }
+        enqueueID = downloadManager.enqueue(request)
     }
 
     var onDownloadComplete: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(ctxt: Context, intent: Intent) {
-
+            val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            if (enqueueID == id) {
+                if (isImageSelected) {
+                    val finalIntent = Intent()
+                    finalIntent.putExtra(Constants.EXTRA_IS_IMAGE_SELECTED, true)
+                    finalIntent.putExtra(
+                        Constants.EXTRA_SELECTED_IMAGE_PATH,
+                        imageFile?.absolutePath
+                    )
+                    setResult(Activity.RESULT_OK, finalIntent)
+                    onBackPressed()
+                } else {
+                    showToast(R.string.download_successfully)
+                    shouldDownloadEnabled = false
+                    invalidateOptionsMenu()
+                }
+            }
         }
+    }
+
+    private fun createFile(): File {
+        val photoModel = binding.photoModel
+        val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
+        return File(
+            storageDir,
+            photoModel.user.name.plus("_" + System.currentTimeMillis()).plus(".jpg")
+        )
     }
 
     override fun onStop() {

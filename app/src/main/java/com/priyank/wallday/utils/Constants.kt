@@ -10,6 +10,9 @@ object Constants {
 
     const val PREF_WALL_PAPER_CHANGING_TIME = "WALL_PAPER_CHANGING_TIME"
 
+    const val INTENT_ACTION_WALL_PAPER_CHANGE = "wallday.action.change_wallpaper"
+    const val INTENT_ACTION_BOOT_COMPLETE = "android.intent.action.BOOT_COMPLETED"
+
     const val MINIMUM_DISTANCE_TO_MOVE_MARKER = 20
     const val GEO_FENCE_RADIUS_IN_METERS = 500.0f
 
@@ -80,7 +83,7 @@ object Constants {
     const val EXTRA_GALLERY_REQUEST_CODE = 103
     const val EXTRA_LOCATION_REQUEST_CODE = 104
 
-    const val INTENT_ACTION_BIKE_EXTEND = "com.cesano.action.bike_extend"
+
     const val INTENT_FILTER_BIKE_EXTEND = "com.cesano.filter.bike_extend"
 
     const val FROM_SIDE_MENU = 0

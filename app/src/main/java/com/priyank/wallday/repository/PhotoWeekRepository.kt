@@ -60,6 +60,26 @@ class PhotoWeekRepository(private val imageWeekDao: ImageWeekDao) {
         return data
     }
 
+    fun insertAllTheImageFirstTime(imageWeek: List<ImageWeek>): LiveData<APIResource<List<Long>>> {
+        val data = MutableLiveData<APIResource<List<Long>>>()
+        data.value = APIResource.loading(null)
+        val disposable = imageWeekDao.insertAllTheImageWeek(*imageWeek.toTypedArray())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ responseModel ->
+                if (responseModel == null) {
+                    data.value = APIResource.error("", null)
+                    return@subscribe
+                }
+                data.value = APIResource.success(responseModel, "")
+            }, { e ->
+                Timber.e(e)
+                data.postValue(APIResource.error(e.localizedMessage ?: "", null))
+            })
+        compositeDisposable?.add(disposable)
+        return data
+    }
+
     fun clearRepo() {
         compositeDisposable?.dispose()
         compositeDisposable = null
