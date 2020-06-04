@@ -10,18 +10,21 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.observe
 import coil.api.load
 import com.priyank.wallday.R
 import com.priyank.wallday.api.responsemodel.PhotoItem
 import com.priyank.wallday.base.Status
+import com.priyank.wallday.custom.createClickableSpan
 import com.priyank.wallday.custom.openApplicationSettings
 import com.priyank.wallday.custom.showToast
 import com.priyank.wallday.databinding.ActivityImageDetailBinding
@@ -63,7 +66,7 @@ class ImageDetailActivity : AppCompatActivity() {
         if (photoItem == null)
             onBackPressed()
 
-        binding.photoModel = photoItem
+        createClickableSpanForTheName()
 
         binding.fullImage.load(photoItem?.urls?.regular, builder = {
             listener({
@@ -113,6 +116,38 @@ class ImageDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun createClickableSpanForTheName() {
+        val boldFont =
+            ResourcesCompat.getFont(this, R.font.nunito_bold)
+
+        val userNameSpan = photoItem?.user?.name?.createClickableSpan({
+            it.cancelPendingInputEvents()
+            val browserIntent =
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(photoItem?.user?.links?.html ?: getString(R.string.unsplash_url))
+                )
+            startActivity(browserIntent)
+        }, boldFont)
+
+        val unSplashSpan = getString(R.string.unsplash).createClickableSpan({
+            it.cancelPendingInputEvents()
+            val browserIntent =
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(getString(R.string.unsplash_url))
+                )
+            startActivity(browserIntent)
+        }, boldFont)
+
+        binding.userName.text = getString(R.string.photo_by)
+        binding.userName.append(" ")
+        binding.userName.append(userNameSpan)
+        binding.userName.append(" " + getString(R.string.on) + " ")
+        binding.userName.append(unSplashSpan)
+        binding.userName.movementMethod = LinkMovementMethod.getInstance()
+    }
+
     override fun onResume() {
         super.onResume()
         registerReceiver(
@@ -135,7 +170,10 @@ class ImageDetailActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menu_open_in_browser -> {
                 val browserIntent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse(photoItem!!.links.html))
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(photoItem!!.links.html ?: getString(R.string.unsplash_url))
+                    )
                 startActivity(browserIntent)
                 return true
             }
@@ -203,7 +241,7 @@ class ImageDetailActivity : AppCompatActivity() {
                     )
                     finalIntent.putExtra(
                         Constants.EXTRA_SELECTED_IMAGE_AUTHOR_URL,
-                        photoItem?.user?.links?.html
+                        photoItem?.user?.links?.html ?: getString(R.string.unsplash_url)
                     )
                     setResult(Activity.RESULT_OK, finalIntent)
                     onBackPressed()

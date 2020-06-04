@@ -2,8 +2,13 @@ package com.priyank.wallday.custom
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.ClickableSpan
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.StringRes
 import com.priyank.wallday.utils.Constants
@@ -33,4 +38,31 @@ fun Activity.openApplicationSettings(requestCode: Int = Constants.EXTRA_ACTIVITY
     val uri = Uri.fromParts("package", packageName, null)
     intent.data = uri
     startActivityForResult(intent, requestCode)
+}
+
+fun String.createClickableSpan(
+    clickListener: (view: View) -> Unit,
+    typeface: Typeface? = null
+): SpannableString {
+    val spannableString = SpannableString(this)
+    val clickableSpan = object : ClickableSpan() {
+        override fun onClick(widget: View) {
+            clickListener.invoke(widget)
+        }
+
+        override fun updateDrawState(ds: TextPaint) {
+            super.updateDrawState(ds)
+            typeface?.let {
+                ds.typeface = it
+            }
+        }
+    }
+
+    spannableString.setSpan(
+        clickableSpan,
+        0,
+        spannableString.length,
+        SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
+    return spannableString
 }

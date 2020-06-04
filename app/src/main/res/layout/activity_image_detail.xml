@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <data>
-
-        <variable
-            name="photoModel"
-            type="com.priyank.wallday.api.responsemodel.PhotoItem" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -45,7 +38,6 @@
             android:gravity="center"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:text="@{@string/photo_by(photoModel.user.name)}"
             android:textColor="@color/colorWhite"
             android:textSize="21sp"
             app:autoSizeMaxTextSize="21sp"

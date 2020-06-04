@@ -13,7 +13,10 @@
     <string name="wall_paper_changed_successfully_without_author_profile">Have a look at your new wallpaper. It is by %s.</string>
     <string name="download_successfully">Image is downloaded successfully.</string>
     <string name="select_an_image">Select an image</string>
-    <string name="photo_by">Photo by %s</string>
+    <string name="photo_by">Photo by</string>
+    <string name="on">on</string>
+    <string name="unsplash">Unsplash</string>
+    <string name="unsplash_url">unsplash.com</string>
     <string name="download_started">Download started</string>
     <string name="storage_permission_denied">Cannot download image. Permission denied.</string>
     <string name="enable_storage_permission_from_settings">Enable storage permission from settings to download image.</string>
