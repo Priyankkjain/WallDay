@@ -14,7 +14,6 @@ object NotificationUtils {
     fun showNotification(
         context: Context,
         intent: Intent,
-        title: String,
         bodyOrDescription: String = ""
     ) {
         val pendingIntent = PendingIntent.getActivity(
@@ -31,11 +30,10 @@ object NotificationUtils {
         notificationBuilder.setDefaults(NotificationCompat.DEFAULT_ALL)
         notificationBuilder.setSound(defaultSoundUri)
         notificationBuilder.priority = NotificationCompat.PRIORITY_MAX
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
+        notificationBuilder.setSmallIcon(R.drawable.ic_notification_icon)
         notificationBuilder.setContentIntent(pendingIntent)
-        notificationBuilder.setContentTitle(title)
-        if (bodyOrDescription.isNotEmpty() && bodyOrDescription.isNotBlank())
-            notificationBuilder.setContentText(bodyOrDescription)
+        notificationBuilder.setContentTitle(context.getString(R.string.app_name))
+        notificationBuilder.setContentText(bodyOrDescription)
         notificationBuilder.color = ContextCompat.getColor(context, R.color.colorAccent)
         val notificationId = Random.nextInt()
         val notificationManager =

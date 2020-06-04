@@ -197,6 +197,14 @@ class ImageDetailActivity : AppCompatActivity() {
                         Constants.EXTRA_SELECTED_IMAGE_PATH,
                         downLoadedFile.absolutePath
                     )
+                    finalIntent.putExtra(
+                        Constants.EXTRA_SELECTED_IMAGE_AUTHOR,
+                        photoItem?.user?.name
+                    )
+                    finalIntent.putExtra(
+                        Constants.EXTRA_SELECTED_IMAGE_AUTHOR_URL,
+                        photoItem?.user?.links?.html
+                    )
                     setResult(Activity.RESULT_OK, finalIntent)
                     onBackPressed()
                 } else {

@@ -7,5 +7,7 @@ import androidx.room.PrimaryKey
 class ImageWeek(
     @PrimaryKey val dayOfWeek: Int,
     var isImageSelected: Boolean,
-    var imagePath: String?
+    var imagePath: String?,
+    var authorName: String?,
+    var authorURL: String?
 )

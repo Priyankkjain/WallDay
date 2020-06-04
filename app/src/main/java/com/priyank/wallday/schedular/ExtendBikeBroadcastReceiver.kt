@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import com.priyank.wallday.R
 import com.priyank.wallday.database.ImageRoomDatabase
 import com.priyank.wallday.ui.MainActivity
@@ -24,10 +25,6 @@ class ExtendBikeBroadcastReceiver : BroadcastReceiver() {
         if (intent?.action != Constants.INTENT_ACTION_WALL_PAPER_CHANGE)
             return
 
-        val successIntent = Intent(context, MainActivity::class.java)
-        successIntent.flags =
-            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-
         val calendar = Calendar.getInstance()
         val dayOfTheWeek = calendar[Calendar.DAY_OF_WEEK] - 1
         val imageDao = ImageRoomDatabase.getDatabase(context!!).imageDao()
@@ -40,12 +37,28 @@ class ExtendBikeBroadcastReceiver : BroadcastReceiver() {
                         WallpaperManager.getInstance(context)
                     val bitmap = BitmapFactory.decodeFile(responseModel.imagePath)
                     if (bitmap != null) {
+
                         wallpaperManager.setBitmap(bitmap)
-                        NotificationUtils.showNotification(
-                            context,
-                            successIntent,
-                            context.getString(R.string.wall_paper_changed_successfully)
-                        )
+
+                        val selectedIntent: Intent
+                        val selectedMessage: String
+                        if (responseModel.authorURL.isNullOrEmpty() || responseModel.authorURL.isNullOrBlank()) {
+                            selectedIntent = Intent(context, MainActivity::class.java)
+                            selectedIntent.flags =
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                            selectedMessage = context.getString(
+                                R.string.wall_paper_changed_successfully_without_author_profile,
+                                responseModel.authorName
+                            )
+                        } else {
+                            selectedIntent =
+                                Intent(Intent.ACTION_VIEW, Uri.parse(responseModel.authorURL))
+                            selectedMessage = context.getString(
+                                R.string.wall_paper_changed_successfully,
+                                responseModel.authorName
+                            )
+                        }
+                        NotificationUtils.showNotification(context, selectedIntent, selectedMessage)
                     }
                 }
             }, { e ->

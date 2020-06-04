@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
 
     override fun onSelectImageClick(item: ImageWeek, position: Int) {
         val intent = Intent(this, ImageListActivity::class.java)
-        intent.putExtra(Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION, position)
+        intent.putExtra(Constants.EXTRA_SELECTED_IMAGE_WEEK_POSITION, position)
         imageSelectResult.launch(intent)
     }
 
@@ -199,15 +199,22 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
                         data.getBooleanExtra(Constants.EXTRA_IS_IMAGE_SELECTED, false)
                     if (isImageSelected) {
                         val position =
-                            data.getIntExtra(Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION, 0)
+                            data.getIntExtra(Constants.EXTRA_SELECTED_IMAGE_WEEK_POSITION, 0)
                         val path =
                             data.getStringExtra(Constants.EXTRA_SELECTED_IMAGE_PATH)
+                        val author =
+                            data.getStringExtra(Constants.EXTRA_SELECTED_IMAGE_AUTHOR)
+                        val authorURL =
+                            data.getStringExtra(Constants.EXTRA_SELECTED_IMAGE_AUTHOR_URL)
 
                         path?.let {
-                            imageWeekList[position].imagePath = it
-                            imageWeekList[position].isImageSelected = true
+                            val imageWeek = imageWeekList[position]
+                            imageWeek.imagePath = it
+                            imageWeek.isImageSelected = true
+                            imageWeek.authorName = author
+                            imageWeek.authorURL = authorURL
                             imageWeekAdapter.notifyItemChanged(position)
-                            imageWeekViewModel.updateImageInWeek(imageWeekList[position])
+                            imageWeekViewModel.updateImageInWeek(imageWeek)
                         }
                     }
                 }

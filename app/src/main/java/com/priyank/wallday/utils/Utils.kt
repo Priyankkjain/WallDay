@@ -46,7 +46,7 @@ class Utils {
         fun getWeekModelsForFirstTime(): List<ImageWeek> {
             val imageWeekList = mutableListOf<ImageWeek>()
             repeat(7) {
-                imageWeekList.add(ImageWeek(it, false, ""))
+                imageWeekList.add(ImageWeek(it, false, "", "", ""))
             }
             return imageWeekList
         }

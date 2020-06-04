@@ -57,7 +57,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         setSupportActionBar(binding.topAppBar)
 
         selectedImagePosition =
-            intent.getIntExtra(Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION, 0)
+            intent.getIntExtra(Constants.EXTRA_SELECTED_IMAGE_WEEK_POSITION, 0)
 
         photosListRequestModel = PhotosListRequestModel(pageNo)
 
@@ -206,7 +206,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         val activityOptionsCompat =
             ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "imageTransition")
         val intent = Intent(this, ImageDetailActivity::class.java)
-        intent.putExtra(Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION, position)
+        intent.putExtra(Constants.EXTRA_SELECTED_IMAGE_WEEK_POSITION, position)
         intent.putExtra(Constants.EXTRA_PHOTO_ITEM, item)
         imageSelectResult.launch(intent, activityOptionsCompat)
     }
@@ -224,7 +224,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                         path?.let {
                             val intent = Intent()
                             intent.putExtra(
-                                Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION,
+                                Constants.EXTRA_SELECTED_IMAGE_WEEK_POSITION,
                                 selectedImagePosition
                             )
                             intent.putExtra(
@@ -235,8 +235,16 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                                 Constants.EXTRA_IS_IMAGE_SELECTED,
                                 true
                             )
+                            intent.putExtra(
+                                Constants.EXTRA_SELECTED_IMAGE_AUTHOR,
+                                data.getStringExtra(Constants.EXTRA_SELECTED_IMAGE_AUTHOR)
+                            )
+                            intent.putExtra(
+                                Constants.EXTRA_SELECTED_IMAGE_AUTHOR_URL,
+                                data.getStringExtra(Constants.EXTRA_SELECTED_IMAGE_AUTHOR_URL)
+                            )
                             setResult(Activity.RESULT_OK, intent)
-                            finish()
+                            onBackPressed()
                         }
                     }
                 }

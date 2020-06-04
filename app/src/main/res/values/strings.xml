@@ -9,7 +9,8 @@
     <string name="wall_paper_error">Wallpaper cannot be loaded due to some error. Select new image to continue.</string>
     <string name="select_image">Select Image</string>
     <string name="downloading_image_by">Downloading image by %s</string>
-    <string name="wall_paper_changed_successfully">Your wallpaper is changed. Have a look at it.</string>
+    <string name="wall_paper_changed_successfully">Have a look at your new wallpaper. It is by %s. Tap see more wallpaper from the user.</string>
+    <string name="wall_paper_changed_successfully_without_author_profile">Have a look at your new wallpaper. It is by %s.</string>
     <string name="download_successfully">Image is downloaded successfully.</string>
     <string name="select_an_image">Select an image</string>
     <string name="photo_by">Photo by %s</string>

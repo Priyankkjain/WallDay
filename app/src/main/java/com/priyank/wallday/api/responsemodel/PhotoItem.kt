@@ -74,5 +74,8 @@ data class User(
     val name: String,
 
     @Json(name = "username")
-    val username: String
+    val username: String,
+
+    @Json(name = "links")
+    val links: Links? = null
 ) : Parcelable
