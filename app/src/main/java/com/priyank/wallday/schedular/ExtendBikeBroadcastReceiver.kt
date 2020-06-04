@@ -41,7 +41,11 @@ class ExtendBikeBroadcastReceiver : BroadcastReceiver() {
                     val bitmap = BitmapFactory.decodeFile(responseModel.imagePath)
                     if (bitmap != null) {
                         wallpaperManager.setBitmap(bitmap)
-                        NotificationUtils.showNotification(context,successIntent,context.getString(R.string.wall_paper_changed_successfully))
+                        NotificationUtils.showNotification(
+                            context,
+                            successIntent,
+                            context.getString(R.string.wall_paper_changed_successfully)
+                        )
                     }
                 }
             }, { e ->

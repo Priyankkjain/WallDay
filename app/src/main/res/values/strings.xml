@@ -11,6 +11,11 @@
     <string name="downloading_image_by">Downloading image by %s</string>
     <string name="wall_paper_changed_successfully">Your wallpaper is changed. Have a look at it.</string>
     <string name="download_successfully">Image is downloaded successfully.</string>
+    <string name="select_an_image">Select an image</string>
+    <string name="photo_by">Photo by %s</string>
+    <string name="download_started">Download started</string>
+    <string name="storage_permission_denied">Cannot download image. Permission denied.</string>
+    <string name="enable_storage_permission_from_settings">Enable storage permission from settings to download image.</string>
 
     <string-array name="day_of_week">
         <item>Sunday</item>

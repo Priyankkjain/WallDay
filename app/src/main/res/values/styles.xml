@@ -6,6 +6,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/backGroundColorPrimary</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="AppTheme" parent="BaseAppTheme" />

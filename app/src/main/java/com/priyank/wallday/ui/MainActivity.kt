@@ -26,7 +26,7 @@ import com.priyank.wallday.schedular.ExtendBikeBroadcastReceiver
 import com.priyank.wallday.utils.Constants
 import com.priyank.wallday.utils.Utils
 import com.priyank.wallday.viewmodel.ImageWeekViewModel
-import java.text.SimpleDateFormat
+import timber.log.Timber
 import java.util.*
 
 
@@ -48,9 +48,15 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
             getPreferenceValue(Constants.PREF_WALL_PAPER_CHANGING_TIME, "12:00 AM")
         binding.wallPaperChangingTime.text =
             getString(R.string.wall_paper_changing_time, wallPaperChangingTime)
-        SimpleDateFormat("HH:mm a", Locale.US).parse(wallPaperChangingTime)?.let {
-            calendar.time = it
-        }
+        val hour = wallPaperChangingTime.substring(0..1)
+        val minute = wallPaperChangingTime.substring(3..4)
+        val amPM = wallPaperChangingTime.takeLast(2)
+        calendar[Calendar.HOUR] = hour.toInt()
+        calendar[Calendar.MINUTE] = minute.toInt()
+        calendar[Calendar.SECOND] = 0
+        calendar[Calendar.MILLISECOND] = 0
+        calendar[Calendar.AM_PM] = if (amPM == "AM") Calendar.AM else Calendar.PM
+
         binding.wallPaperChangingTime.setOnClickListener {
             showTimePicker()
         }
@@ -85,6 +91,7 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
                     }
                 }
                 else -> {
+                    binding.progressCircular.visibility = View.GONE
                     imageWeekList.clear()
                     if (response.data.isNullOrEmpty()) {
                         val weekModelsForFirstTime = Utils.getWeekModelsForFirstTime()
@@ -93,6 +100,7 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
                     } else {
                         imageWeekList.addAll(response.data)
                     }
+                    Timber.d(imageWeekList.toString())
                     imageWeekAdapter.notifyDataSetChanged()
                 }
             }
@@ -101,16 +109,16 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
         imageWeekViewModel.updateImageOfDay.observe(this) { response ->
             when (response.status) {
                 Status.LOADING -> {
-                    binding.progressCircular.visibility = View.VISIBLE
+//                    binding.progressCircular.visibility = View.VISIBLE
                 }
                 Status.ERROR -> {
-                    binding.progressCircular.visibility = View.GONE
+//                    binding.progressCircular.visibility = View.GONE
                     response.message?.let {
                         showToast(it)
                     }
                 }
                 else -> {
-
+//                    binding.progressCircular.visibility = View.GONE
                 }
             }
         }
@@ -164,14 +172,14 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
         val intent = Intent(this, ExtendBikeBroadcastReceiver::class.java)
         intent.action = Constants.INTENT_ACTION_WALL_PAPER_CHANGE
         val pendingIntent =
-            PendingIntent.getBroadcast(this, 101, intent, PendingIntent.FLAG_NO_CREATE)
+            PendingIntent.getBroadcast(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         if (pendingIntent != null && alarmManager != null) {
             alarmManager.cancel(pendingIntent)
         }
         alarmManager?.setRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
+            AlarmManager.INTERVAL_FIFTEEN_MINUTES,
             pendingIntent
         )
     }

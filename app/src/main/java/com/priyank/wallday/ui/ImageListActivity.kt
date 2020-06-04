@@ -3,11 +3,13 @@ package com.priyank.wallday.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.RecyclerView
@@ -28,17 +30,18 @@ import com.priyank.wallday.utils.Constants
 import com.priyank.wallday.viewmodel.PhotoListViewModel
 import com.priyank.wallday.viewmodel.PhotoListViewModelFactory
 
+
 class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickListener {
 
     private lateinit var binding: ActivityImageListBinding
     private var selectedImagePosition = 0
 
-    private val bikeListViewModel by viewModels<PhotoListViewModel> {
+    private val photoListViewModel by viewModels<PhotoListViewModel> {
         PhotoListViewModelFactory(getString(R.string.unsplash_key), application)
     }
 
-    private lateinit var bikeListAdapter: PhotoListAdapter
-    private lateinit var bikeList: MutableList<PhotoItem>
+    private lateinit var photoListAdapter: PhotoListAdapter
+    private lateinit var photoList: MutableList<PhotoItem>
 
     private var pageNo = 1
     private var maxPage = 50
@@ -46,27 +49,28 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
     private var isLoadingData = false
     private var isLastPage = false
 
-    private lateinit var bikeListRequestModel: PhotosListRequestModel
+    private lateinit var photosListRequestModel: PhotosListRequestModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_image_list)
+        setSupportActionBar(binding.topAppBar)
 
         selectedImagePosition =
             intent.getIntExtra(Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION, 0)
 
-        bikeListRequestModel = PhotosListRequestModel(pageNo)
+        photosListRequestModel = PhotosListRequestModel(pageNo)
 
-        bikeList = mutableListOf()
+        photoList = mutableListOf()
 
-        bikeListAdapter = PhotoListAdapter(bikeList)
-        bikeListAdapter.setPhotoImageClickListener(this)
-        binding.photosRv.adapter = bikeListAdapter
+        photoListAdapter = PhotoListAdapter(photoList)
+        photoListAdapter.setPhotoImageClickListener(this)
+        binding.photosRv.adapter = photoListAdapter
 
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         binding.photosRv.layoutManager = staggeredGridLayoutManager
 
-        bikeListViewModel.photoListResponse.observe(this) {
+        photoListViewModel.photoListResponse.observe(this) {
             handlePhotoListResponse(it)
         }
 
@@ -75,7 +79,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                 override fun onLoadMore(totalItemsCount: Int, view: RecyclerView?) {
                     if (!isLoadingData && !isLastPage) {
                         pageNo++
-                        bikeListRequestModel.page = pageNo
+                        photosListRequestModel.page = pageNo
                         isLoadingData = true
                         if (pageNo != maxPage)
                             callPhotoListAPI()
@@ -90,9 +94,9 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         binding.swipeRefresh.setOnRefreshListener {
             pageNo = 1
             isLastPage = false
-            bikeListRequestModel.page = pageNo
-            bikeList.clear()
-            bikeListAdapter.notifyDataSetChanged()
+            photosListRequestModel.page = pageNo
+            photoList.clear()
+            photoListAdapter.notifyDataSetChanged()
             callPhotoListAPI()
         }
 
@@ -101,7 +105,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
     }
 
     private fun callPhotoListAPI() {
-        bikeListViewModel.callPhotoListAPI(bikeListRequestModel)
+        photoListViewModel.callPhotoListAPI(photosListRequestModel)
     }
 
     private fun handlePhotoListResponse(response: APIResource<List<PhotoItem>>) {
@@ -111,16 +115,16 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
 
         when (response.status) {
             Status.LOADING -> {
-                bikeList.addAll(getShimmerDataList())
-                bikeListAdapter.notifyItemRangeInserted(
-                    bikeList.size - Constants.API_OFFSET_ITEM,
+                photoList.addAll(getShimmerDataList())
+                photoListAdapter.notifyItemRangeInserted(
+                    photoList.size - Constants.API_OFFSET_ITEM,
                     Constants.API_OFFSET_ITEM
                 )
             }
             Status.ERROR -> {
                 if (pageNo == 1) {
-                    bikeList.clear()
-                    bikeListAdapter.notifyDataSetChanged()
+                    photoList.clear()
+                    photoListAdapter.notifyDataSetChanged()
                     binding.photosRv.visibility = View.GONE
                 } else {
                     removeShimmerItemsFromList()
@@ -144,15 +148,15 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                 }
 
                 val apiListSize = apiList.size
-                bikeList.addAll(apiList)
-                bikeListAdapter.notifyItemRangeInserted(bikeList.size - apiListSize, apiListSize)
+                photoList.addAll(apiList)
+                photoListAdapter.notifyItemRangeInserted(photoList.size - apiListSize, apiListSize)
                 isLoadingData = false
             }
         }
     }
 
     private fun removeShimmerItemsFromList() {
-        val reverseBikeList = bikeList.asReversed()
+        val reverseBikeList = photoList.asReversed()
         val shimmerList = mutableListOf<PhotoItem>()
         for (dataItem in reverseBikeList) {
             if (dataItem.viewType == Constants.VIEW_TYPE_SHIMMER_ITEM) {
@@ -164,8 +168,8 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
 
         if (shimmerList.size != 0) {
             val totalShimmerSize = shimmerList.size
-            bikeList.removeAll(shimmerList)
-            bikeListAdapter.notifyItemRangeRemoved(bikeList.size, totalShimmerSize)
+            photoList.removeAll(shimmerList)
+            photoListAdapter.notifyItemRangeRemoved(photoList.size, totalShimmerSize)
         }
     }
 
@@ -178,12 +182,9 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                     Urls(),
                     "",
                     0,
-                    "",
-                    "",
                     Links(),
                     "",
-                    User(0, "", "", 0, "", null, "", "", 0, null, "", "", ""),
-                    0,
+                    User("", "", ""),
                     0,
                     viewType = Constants.VIEW_TYPE_SHIMMER_ITEM
                 )
@@ -192,12 +193,22 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         return bikeShimmerList
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onImageClick(view: View, item: PhotoItem, position: Int) {
+        val activityOptionsCompat =
+            ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "imageTransition")
         val intent = Intent(this, ImageDetailActivity::class.java)
         intent.putExtra(Constants.EXTRA_SELECT_IMAGE_WEEK_POSITION, position)
         intent.putExtra(Constants.EXTRA_PHOTO_ITEM, item)
-        imageSelectResult.launch(intent)
+        imageSelectResult.launch(intent, activityOptionsCompat)
     }
 
     private val imageSelectResult =

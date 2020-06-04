@@ -116,10 +116,10 @@ fun Fragment.hideKeyboard(view: View) {
     }
 }
 
-fun Fragment.openApplicationSettings(requestCode: Int = Constants.EXTRA_ACTIVITY_RESULT_REQUEST_CODE) {
+fun Activity.openApplicationSettings(requestCode: Int = Constants.EXTRA_ACTIVITY_RESULT_REQUEST_CODE) {
     val intent = Intent()
     intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-    val uri = Uri.fromParts("package", requireActivity().packageName, null)
+    val uri = Uri.fromParts("package", packageName, null)
     intent.data = uri
     startActivityForResult(intent, requestCode)
 }

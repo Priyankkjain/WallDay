@@ -22,8 +22,9 @@ object PhotoListRepository {
         val data = MutableLiveData<APIResource<List<PhotoItem>>>()
         data.value = APIResource.loading(null)
         val disposable =
-            ApiHelperClass.getAPIClient().callPhotosAPI(clientID, photosListRequestModel)
-                .subscribeOn(Schedulers.io())
+            ApiHelperClass.getAPIClient().callPhotosAPI(
+                clientID, photosListRequestModel.page, photosListRequestModel.perPage
+            ).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ responseModel ->
                     if (responseModel == null) {
@@ -31,7 +32,7 @@ object PhotoListRepository {
                         return@subscribe
                     }
 
-                    if (responseModel.isNullOrEmpty()) {
+                    if (!responseModel.isNullOrEmpty()) {
                         data.value = APIResource.success(responseModel, "")
                     } else {
                         data.value = APIResource.error("", null)

@@ -25,13 +25,7 @@ class PhotoWeekRepository(private val imageWeekDao: ImageWeekDao) {
                     data.value = APIResource.error("", null)
                     return@subscribe
                 }
-
-                if (responseModel.isNullOrEmpty()) {
-                    data.value = APIResource.success(responseModel, "")
-                } else {
-                    data.value = APIResource.error("", null)
-                }
-
+                data.value = APIResource.success(responseModel, "")
             }, { e ->
                 Timber.e(e)
                 data.postValue(APIResource.error(e.localizedMessage ?: "", null))

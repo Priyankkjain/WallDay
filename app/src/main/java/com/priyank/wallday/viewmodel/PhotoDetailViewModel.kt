@@ -19,7 +19,7 @@ class PhotoDetailViewModel(
 
     val downLoadTrackerResponse: LiveData<APIResource<DownLoadTrackerResponse>> =
         downLoadTrackerLiveData.switchMap {
-            PhotoDetailRepository.callDownLoadTrackerAPI(clientID, it)
+            PhotoDetailRepository.callDownLoadTrackerAPI(it, clientID)
         }
 
     fun callDownloadTrackerAPI(url: String) {

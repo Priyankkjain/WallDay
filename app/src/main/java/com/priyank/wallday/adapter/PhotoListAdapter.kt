@@ -9,34 +9,52 @@ import androidx.recyclerview.widget.RecyclerView
 import com.priyank.wallday.R
 import com.priyank.wallday.api.responsemodel.PhotoItem
 import com.priyank.wallday.databinding.ItemPhotoBinding
+import com.priyank.wallday.databinding.ItemPhotoShimmerBinding
+import com.priyank.wallday.utils.Constants
 
 class PhotoListAdapter(private val data: List<PhotoItem>) :
-    RecyclerView.Adapter<PhotoListAdapter.PhotoVH>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var photoImageClickListener: PhotoImageClickListener? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoVH {
-        val v: ItemPhotoBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.item_photo,
-            parent,
-            false
-        )
-        return PhotoVH(v)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == Constants.VIEW_TYPE_RECYCLE_ITEM) {
+            val v: ItemPhotoBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context),
+                R.layout.item_photo,
+                parent,
+                false
+            )
+            return PhotoVH(v)
+        } else {
+            val v: ItemPhotoShimmerBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context),
+                R.layout.item_photo_shimmer,
+                parent,
+                false
+            )
+            return PhotoShimmerVH(v)
+        }
     }
 
-    override fun onBindViewHolder(holder: PhotoVH, position: Int) {
-        val photo = data[position]
-        holder.binding.photoModel = photo
+    override fun getItemViewType(position: Int): Int {
+        return data[position].viewType
+    }
 
-        holder.binding.itemUnsplashPhotoImageView.aspectRatio =
-            photo.height.toDouble() / photo.width.toDouble()
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is PhotoVH) {
+            val photo = data[position]
+            holder.binding.photoModel = photo
 
-        if (!photo.color.isNullOrEmpty())
-            holder.itemView.setBackgroundColor(Color.parseColor(photo.color))
+            holder.binding.itemUnsplashPhotoImageView.aspectRatio =
+                photo.height.toDouble() / photo.width.toDouble()
 
-        holder.binding.root.setOnClickListener {
-            photoImageClickListener?.onImageClick(it, photo, position)
+            if (!photo.color.isNullOrEmpty())
+                holder.itemView.setBackgroundColor(Color.parseColor(photo.color))
+
+            holder.binding.root.setOnClickListener {
+                photoImageClickListener?.onImageClick(it, photo, position)
+            }
         }
     }
 
@@ -45,6 +63,9 @@ class PhotoListAdapter(private val data: List<PhotoItem>) :
     }
 
     inner class PhotoVH(val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root)
+
+    inner class PhotoShimmerVH(val binding: ItemPhotoShimmerBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     interface PhotoImageClickListener {
         fun onImageClick(view: View, item: PhotoItem, position: Int)

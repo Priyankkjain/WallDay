@@ -10,6 +10,7 @@ import coil.api.load
 import com.priyank.wallday.R
 import com.priyank.wallday.database.ImageWeek
 import com.priyank.wallday.databinding.ItemImageWeekBinding
+import java.io.File
 
 class ImageWeekAdapter(private val context: Context, private val data: List<ImageWeek>) :
     RecyclerView.Adapter<ImageWeekAdapter.ImageWeekVH>() {
@@ -34,7 +35,7 @@ class ImageWeekAdapter(private val context: Context, private val data: List<Imag
 
         if (photo.isImageSelected) {
             holder.binding.selectImage.visibility = View.GONE
-            holder.binding.imageOfTheDay.load(photo.imagePath, builder = {
+            holder.binding.imageOfTheDay.load(File(photo.imagePath ?: ""), builder = {
                 listener({
                     //THis is start for the success listener
                     holder.binding.progressCircular.visibility = View.VISIBLE
@@ -62,7 +63,7 @@ class ImageWeekAdapter(private val context: Context, private val data: List<Imag
             holder.binding.imageLoadError.visibility = View.GONE
         }
 
-        holder.binding.root.setOnClickListener {
+        holder.binding.selectImage.setOnClickListener {
             imageWeekClickListener?.onSelectImageClick(photo, position)
         }
     }

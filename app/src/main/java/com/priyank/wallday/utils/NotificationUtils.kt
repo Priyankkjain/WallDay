@@ -31,6 +31,7 @@ object NotificationUtils {
         notificationBuilder.setDefaults(NotificationCompat.DEFAULT_ALL)
         notificationBuilder.setSound(defaultSoundUri)
         notificationBuilder.priority = NotificationCompat.PRIORITY_MAX
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
         notificationBuilder.setContentIntent(pendingIntent)
         notificationBuilder.setContentTitle(title)
         if (bodyOrDescription.isNotEmpty() && bodyOrDescription.isNotBlank())
