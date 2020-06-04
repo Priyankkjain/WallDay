@@ -43,7 +43,7 @@
             android:screenOrientation="portrait" />
 
         <receiver
-            android:name=".schedular.ExtendBikeBroadcastReceiver"
+            android:name=".receiver.WallPaperChangeBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -51,7 +51,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".schedular.BootCompleteBroadcastReceiver">
+        <receiver android:name=".receiver.BootCompleteBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

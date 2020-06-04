@@ -26,8 +26,8 @@ import com.priyank.wallday.custom.openApplicationSettings
 import com.priyank.wallday.custom.showToast
 import com.priyank.wallday.databinding.ActivityImageDetailBinding
 import com.priyank.wallday.utils.Constants
-import com.priyank.wallday.viewmodel.PhotoDetailViewModel
-import com.priyank.wallday.viewmodel.PhotoListViewModelFactory
+import com.priyank.wallday.viewmodel.ImageDetailViewModel
+import com.priyank.wallday.viewmodel.ImageViewModelFactory
 import permissions.dispatcher.*
 import timber.log.Timber
 import java.io.File
@@ -37,8 +37,8 @@ class ImageDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityImageDetailBinding
     private var photoItem: PhotoItem? = null
-    private val photoDetailViewModel by viewModels<PhotoDetailViewModel> {
-        PhotoListViewModelFactory(getString(R.string.unsplash_key), application, true)
+    private val photoDetailViewModel by viewModels<ImageDetailViewModel> {
+        ImageViewModelFactory(getString(R.string.unsplash_key), application, true)
     }
     private val downloadManager by lazy {
         getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -127,7 +127,7 @@ class ImageDetailActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_photo_detail, menu)
+        menuInflater.inflate(R.menu.menu_image_detail, menu)
         return true
     }
 

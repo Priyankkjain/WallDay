@@ -3,36 +3,10 @@
     <color name="colorPrimary">#F63F04</color>
     <color name="colorPrimaryDark">#F63F04</color>
     <color name="colorAccent">#F63F04</color>
+
     <color name="backGroundSemiOverlay">#40000000</color>
-
-    <color name="statusBarColorV21">#121212</color>
-
-    <color name="textColorPrimary">@color/colorPrimary</color>
-    <color name="textColorSecondary">#FEFEFE</color>
-    <color name="textColorSecondaryLight">#8F9BB3</color>
-    <color name="textColorIntroduction">#FFFFFF</color>
-    <color name="textColorIntroductionLight">#C0BAB8</color>
-    <color name="textColorError">#D0021B</color>
-    <color name="textColorBikeListSecondary">#A0A0AE</color>
-    <color name="textColorWallet">#80FFFFFF</color>
-
     <color name="backGroundColorPrimary">#121212</color>
-    <color name="backGroundColorEditTextShape">#D1D6E0</color>
-    <color name="backGroundColorViewDivider">#D8D8D8</color>
-    <color name="backGroundColorPagerIndicator">#EFEFF4</color>
-    <color name="backGroundColorWallet">#33000000</color>
-    <color name="backGroundColorBottomSheetLine">#EAECEF</color>
-    <color name="backGroundColorInverse">#FDFDFD</color>
-    <color name="backGroundColorBottomSheet">#FF424242</color>
-    <color name="backGroundColorShimmerEffect">#FF424242</color>
-    <color name="backGroundColorCameraPreview">#C9D5E6</color>
-    <color name="backGroundColorUploadFile">#ACBCD3</color>
-    <color name="backGroundColorSubscribeButton">#000000</color>
-    <color name="backGroundColorPrimary30percent">#CC121212</color>
-    <color name="backGroundColorLogout">#000000</color>
-    <color name="backGroundColorPurchasedSubscriptionButton">#3ACA8D</color>
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
-    <color name="colorGreen">#00FF00</color>
 </resources>

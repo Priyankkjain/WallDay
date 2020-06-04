@@ -22,7 +22,7 @@ import com.priyank.wallday.custom.savePreferenceValue
 import com.priyank.wallday.custom.showToast
 import com.priyank.wallday.database.ImageWeek
 import com.priyank.wallday.databinding.ActivityMainBinding
-import com.priyank.wallday.schedular.ExtendBikeBroadcastReceiver
+import com.priyank.wallday.receiver.WallPaperChangeBroadcastReceiver
 import com.priyank.wallday.utils.Constants
 import com.priyank.wallday.utils.Utils
 import com.priyank.wallday.viewmodel.ImageWeekViewModel
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
 
     private fun changeTheAlarmManager() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val intent = Intent(this, ExtendBikeBroadcastReceiver::class.java)
+        val intent = Intent(this, WallPaperChangeBroadcastReceiver::class.java)
         intent.action = Constants.INTENT_ACTION_WALL_PAPER_CHANGE
         val pendingIntent =
             PendingIntent.getBroadcast(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT)

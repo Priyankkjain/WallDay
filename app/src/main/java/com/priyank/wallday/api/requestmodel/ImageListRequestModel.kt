@@ -3,7 +3,7 @@ package com.priyank.wallday.api.requestmodel
 import com.priyank.wallday.utils.Constants
 import com.squareup.moshi.Json
 
-data class PhotosListRequestModel(
+data class ImageListRequestModel(
     @Json(name = "page")
     var page: Int,
 

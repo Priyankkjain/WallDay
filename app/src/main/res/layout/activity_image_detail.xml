@@ -34,7 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/menu_photo_detail"
+            app:menu="@menu/menu_image_detail"
             app:navigationIcon="@drawable/ic_baseline_arrow_back_24_white" />
 
         <com.google.android.material.textview.MaterialTextView

@@ -1,4 +1,4 @@
-package com.priyank.wallday.schedular
+package com.priyank.wallday.receiver
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -33,7 +33,7 @@ class BootCompleteBroadcastReceiver : BroadcastReceiver() {
         calendar[Calendar.AM_PM] = if (amPM == "AM") Calendar.AM else Calendar.PM
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-        val alarmIntent = Intent(context, ExtendBikeBroadcastReceiver::class.java)
+        val alarmIntent = Intent(context, WallPaperChangeBroadcastReceiver::class.java)
         alarmIntent.action = Constants.INTENT_ACTION_WALL_PAPER_CHANGE
         val pendingIntent =
             PendingIntent.getBroadcast(context, 101, alarmIntent, PendingIntent.FLAG_NO_CREATE)

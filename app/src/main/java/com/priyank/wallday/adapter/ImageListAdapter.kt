@@ -8,28 +8,28 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.priyank.wallday.R
 import com.priyank.wallday.api.responsemodel.PhotoItem
-import com.priyank.wallday.databinding.ItemPhotoBinding
-import com.priyank.wallday.databinding.ItemPhotoShimmerBinding
+import com.priyank.wallday.databinding.ItemImageListBinding
+import com.priyank.wallday.databinding.ItemImageListShimmerBinding
 import com.priyank.wallday.utils.Constants
 
-class PhotoListAdapter(private val data: List<PhotoItem>) :
+class ImageListAdapter(private val data: List<PhotoItem>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var photoImageClickListener: PhotoImageClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == Constants.VIEW_TYPE_RECYCLE_ITEM) {
-            val v: ItemPhotoBinding = DataBindingUtil.inflate(
+            val v: ItemImageListBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.item_photo,
+                R.layout.item_image_list,
                 parent,
                 false
             )
             return PhotoVH(v)
         } else {
-            val v: ItemPhotoShimmerBinding = DataBindingUtil.inflate(
+            val v: ItemImageListShimmerBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.item_photo_shimmer,
+                R.layout.item_image_list_shimmer,
                 parent,
                 false
             )
@@ -62,9 +62,9 @@ class PhotoListAdapter(private val data: List<PhotoItem>) :
         return data.size
     }
 
-    inner class PhotoVH(val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class PhotoVH(val binding: ItemImageListBinding) : RecyclerView.ViewHolder(binding.root)
 
-    inner class PhotoShimmerVH(val binding: ItemPhotoShimmerBinding) :
+    inner class PhotoShimmerVH(val binding: ItemImageListShimmerBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     interface PhotoImageClickListener {

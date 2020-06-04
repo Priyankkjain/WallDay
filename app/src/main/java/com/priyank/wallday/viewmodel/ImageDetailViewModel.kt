@@ -7,19 +7,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
 import com.priyank.wallday.api.responsemodel.DownLoadTrackerResponse
 import com.priyank.wallday.base.APIResource
-import com.priyank.wallday.repository.PhotoDetailRepository
-import com.priyank.wallday.repository.PhotoListRepository
+import com.priyank.wallday.repository.ImageDetailRepository
+import com.priyank.wallday.utils.Utils
 
-class PhotoDetailViewModel(
+class ImageDetailViewModel(
     private val clientID: String,
-    private val applicationContext: Application
+    applicationContext: Application
 ) : AndroidViewModel(applicationContext) {
 
     private val downLoadTrackerLiveData = MutableLiveData<String>()
 
     val downLoadTrackerResponse: LiveData<APIResource<DownLoadTrackerResponse>> =
         downLoadTrackerLiveData.switchMap {
-            PhotoDetailRepository.callDownLoadTrackerAPI(it, clientID)
+            if (Utils.isNetworkAvailable(applicationContext)) {
+                ImageDetailRepository.callDownLoadTrackerAPI(it, clientID)
+            } else {
+                val data = MutableLiveData<APIResource<DownLoadTrackerResponse>>()
+                data.value = APIResource.noNetwork()
+                data
+            }
         }
 
     fun callDownloadTrackerAPI(url: String) {
@@ -28,6 +34,6 @@ class PhotoDetailViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        PhotoListRepository.clearRepo()
+        ImageDetailRepository.clearRepo()
     }
 }

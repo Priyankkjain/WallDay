@@ -10,7 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class PhotoWeekRepository(private val imageWeekDao: ImageWeekDao) {
+class ImageWeekRepository(private val imageWeekDao: ImageWeekDao) {
 
     private var compositeDisposable: CompositeDisposable? = CompositeDisposable()
 

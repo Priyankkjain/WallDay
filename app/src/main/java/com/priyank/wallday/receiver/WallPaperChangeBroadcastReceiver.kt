@@ -1,4 +1,4 @@
-package com.priyank.wallday.schedular
+package com.priyank.wallday.receiver
 
 import android.app.WallpaperManager
 import android.content.BroadcastReceiver
@@ -17,7 +17,7 @@ import timber.log.Timber
 import java.util.*
 
 
-class ExtendBikeBroadcastReceiver : BroadcastReceiver() {
+class WallPaperChangeBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
         Timber.d("Inside Wall Paper broadcaster")

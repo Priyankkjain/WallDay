@@ -8,13 +8,12 @@ import androidx.lifecycle.switchMap
 import com.priyank.wallday.base.APIResource
 import com.priyank.wallday.database.ImageRoomDatabase
 import com.priyank.wallday.database.ImageWeek
-import com.priyank.wallday.repository.PhotoListRepository
-import com.priyank.wallday.repository.PhotoWeekRepository
+import com.priyank.wallday.repository.ImageWeekRepository
 
 class ImageWeekViewModel(private val applicationContext: Application) :
     AndroidViewModel(applicationContext) {
 
-    private val repository: PhotoWeekRepository
+    private val repository: ImageWeekRepository
     private val updateImageOfDayLiveData = MutableLiveData<ImageWeek>()
     private val insertImageOfDayFirstTimeLiveData = MutableLiveData<List<ImageWeek>>()
 
@@ -24,7 +23,7 @@ class ImageWeekViewModel(private val applicationContext: Application) :
 
     init {
         val imageDao = ImageRoomDatabase.getDatabase(applicationContext).imageDao()
-        repository = PhotoWeekRepository(imageDao)
+        repository = ImageWeekRepository(imageDao)
         imagesWeek = repository.getWeeksImage()
         updateImageOfDay = updateImageOfDayLiveData.switchMap {
             repository.updateImageOfDay(it)
@@ -44,6 +43,6 @@ class ImageWeekViewModel(private val applicationContext: Application) :
 
     override fun onCleared() {
         super.onCleared()
-        PhotoListRepository.clearRepo()
+        repository.clearRepo()
     }
 }

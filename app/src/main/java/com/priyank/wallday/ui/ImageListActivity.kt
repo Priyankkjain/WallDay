@@ -15,8 +15,8 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.priyank.wallday.R
-import com.priyank.wallday.adapter.PhotoListAdapter
-import com.priyank.wallday.api.requestmodel.PhotosListRequestModel
+import com.priyank.wallday.adapter.ImageListAdapter
+import com.priyank.wallday.api.requestmodel.ImageListRequestModel
 import com.priyank.wallday.api.responsemodel.Links
 import com.priyank.wallday.api.responsemodel.PhotoItem
 import com.priyank.wallday.api.responsemodel.Urls
@@ -27,20 +27,20 @@ import com.priyank.wallday.custom.PaginationRecyclerViewScrollListener
 import com.priyank.wallday.custom.showToast
 import com.priyank.wallday.databinding.ActivityImageListBinding
 import com.priyank.wallday.utils.Constants
-import com.priyank.wallday.viewmodel.PhotoListViewModel
-import com.priyank.wallday.viewmodel.PhotoListViewModelFactory
+import com.priyank.wallday.viewmodel.ImageListViewModel
+import com.priyank.wallday.viewmodel.ImageViewModelFactory
 
 
-class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickListener {
+class ImageListActivity : AppCompatActivity(), ImageListAdapter.PhotoImageClickListener {
 
     private lateinit var binding: ActivityImageListBinding
     private var selectedImagePosition = 0
 
-    private val photoListViewModel by viewModels<PhotoListViewModel> {
-        PhotoListViewModelFactory(getString(R.string.unsplash_key), application)
+    private val photoListViewModel by viewModels<ImageListViewModel> {
+        ImageViewModelFactory(getString(R.string.unsplash_key), application)
     }
 
-    private lateinit var photoListAdapter: PhotoListAdapter
+    private lateinit var imageListAdapter: ImageListAdapter
     private lateinit var photoList: MutableList<PhotoItem>
 
     private var pageNo = 1
@@ -49,7 +49,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
     private var isLoadingData = false
     private var isLastPage = false
 
-    private lateinit var photosListRequestModel: PhotosListRequestModel
+    private lateinit var imageListRequestModel: ImageListRequestModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,13 +59,13 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         selectedImagePosition =
             intent.getIntExtra(Constants.EXTRA_SELECTED_IMAGE_WEEK_POSITION, 0)
 
-        photosListRequestModel = PhotosListRequestModel(pageNo)
+        imageListRequestModel = ImageListRequestModel(pageNo)
 
         photoList = mutableListOf()
 
-        photoListAdapter = PhotoListAdapter(photoList)
-        photoListAdapter.setPhotoImageClickListener(this)
-        binding.photosRv.adapter = photoListAdapter
+        imageListAdapter = ImageListAdapter(photoList)
+        imageListAdapter.setPhotoImageClickListener(this)
+        binding.photosRv.adapter = imageListAdapter
 
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         binding.photosRv.layoutManager = staggeredGridLayoutManager
@@ -79,7 +79,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                 override fun onLoadMore(totalItemsCount: Int, view: RecyclerView?) {
                     if (!isLoadingData && !isLastPage) {
                         pageNo++
-                        photosListRequestModel.page = pageNo
+                        imageListRequestModel.page = pageNo
                         isLoadingData = true
                         if (pageNo != maxPage)
                             callPhotoListAPI()
@@ -94,9 +94,9 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         binding.swipeRefresh.setOnRefreshListener {
             pageNo = 1
             isLastPage = false
-            photosListRequestModel.page = pageNo
+            imageListRequestModel.page = pageNo
             photoList.clear()
-            photoListAdapter.notifyDataSetChanged()
+            imageListAdapter.notifyDataSetChanged()
             callPhotoListAPI()
         }
 
@@ -105,7 +105,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
     }
 
     private fun callPhotoListAPI() {
-        photoListViewModel.callPhotoListAPI(photosListRequestModel)
+        photoListViewModel.callPhotoListAPI(imageListRequestModel)
     }
 
     private fun handlePhotoListResponse(response: APIResource<List<PhotoItem>>) {
@@ -116,7 +116,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         when (response.status) {
             Status.LOADING -> {
                 photoList.addAll(getShimmerDataList())
-                photoListAdapter.notifyItemRangeInserted(
+                imageListAdapter.notifyItemRangeInserted(
                     photoList.size - Constants.API_OFFSET_ITEM,
                     Constants.API_OFFSET_ITEM
                 )
@@ -124,7 +124,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
             Status.ERROR -> {
                 if (pageNo == 1) {
                     photoList.clear()
-                    photoListAdapter.notifyDataSetChanged()
+                    imageListAdapter.notifyDataSetChanged()
                     binding.photosRv.visibility = View.GONE
                 } else {
                     removeShimmerItemsFromList()
@@ -149,7 +149,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
 
                 val apiListSize = apiList.size
                 photoList.addAll(apiList)
-                photoListAdapter.notifyItemRangeInserted(photoList.size - apiListSize, apiListSize)
+                imageListAdapter.notifyItemRangeInserted(photoList.size - apiListSize, apiListSize)
                 isLoadingData = false
             }
         }
@@ -169,7 +169,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
         if (shimmerList.size != 0) {
             val totalShimmerSize = shimmerList.size
             photoList.removeAll(shimmerList)
-            photoListAdapter.notifyItemRangeRemoved(photoList.size, totalShimmerSize)
+            imageListAdapter.notifyItemRangeRemoved(photoList.size, totalShimmerSize)
         }
     }
 
