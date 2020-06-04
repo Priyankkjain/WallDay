@@ -188,6 +188,7 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
         val intent = Intent(this, ImageListActivity::class.java)
         intent.putExtra(Constants.EXTRA_SELECTED_IMAGE_WEEK_POSITION, position)
         imageSelectResult.launch(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     private val imageSelectResult =

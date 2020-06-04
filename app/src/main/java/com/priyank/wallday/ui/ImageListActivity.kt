@@ -245,6 +245,7 @@ class ImageListActivity : AppCompatActivity(), PhotoListAdapter.PhotoImageClickL
                             )
                             setResult(Activity.RESULT_OK, intent)
                             onBackPressed()
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                         }
                     }
                 }
