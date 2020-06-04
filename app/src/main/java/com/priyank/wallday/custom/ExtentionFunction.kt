@@ -59,7 +59,7 @@ fun String.createClickableSpan(
         override fun updateDrawState(ds: TextPaint) {
             super.updateDrawState(ds)
             ds.linkColor = linkColor
-            ds.isUnderlineText = false
+            ds.underlineColor = linkColor
             ds.color = linkColor
             typeface?.let {
                 ds.typeface = it

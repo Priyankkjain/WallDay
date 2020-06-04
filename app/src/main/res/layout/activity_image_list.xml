@@ -28,6 +28,7 @@
                 app:contentInsetStart="0dp"
                 app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
                 app:title="@string/select_an_image"
+                app:titleTextAppearance="@style/ToolbarText"
                 app:titleTextColor="?android:textColorPrimary" />
 
         </com.google.android.material.appbar.AppBarLayout>

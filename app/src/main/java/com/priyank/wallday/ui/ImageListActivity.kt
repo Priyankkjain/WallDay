@@ -197,7 +197,6 @@ class ImageListActivity : AppCompatActivity(), ImageListAdapter.ImageClickListen
         when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -246,10 +245,14 @@ class ImageListActivity : AppCompatActivity(), ImageListAdapter.ImageClickListen
                             )
                             setResult(Activity.RESULT_OK, intent)
                             onBackPressed()
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                         }
                     }
                 }
             }
         }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
 }

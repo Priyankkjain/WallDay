@@ -36,6 +36,7 @@ class ImageWeekAdapter(private val context: Context, private val data: List<Imag
 
         if (photo.isImageSelected) {
             holder.binding.selectImage.visibility = View.GONE
+            holder.binding.imageOfTheDay.visibility = View.VISIBLE
             holder.binding.imageOfTheDay.load(File(photo.imagePath ?: ""), builder = {
                 listener({
                     //THis is start for the success listener
@@ -62,6 +63,7 @@ class ImageWeekAdapter(private val context: Context, private val data: List<Imag
         } else {
             holder.binding.selectImage.visibility = View.VISIBLE
             holder.binding.imageLoadError.visibility = View.GONE
+            holder.binding.imageOfTheDay.visibility = View.GONE
         }
 
         holder.binding.selectImage.setOnClickListener {
