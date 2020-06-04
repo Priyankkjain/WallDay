@@ -16,7 +16,7 @@
     <string name="photo_by">Photo by</string>
     <string name="on">on</string>
     <string name="unsplash">Unsplash</string>
-    <string name="unsplash_url">unsplash.com</string>
+    <string name="unsplash_url">https://www.unsplash.com</string>
     <string name="download_started">Download started</string>
     <string name="storage_permission_denied">Cannot download image. Permission denied.</string>
     <string name="enable_storage_permission_from_settings">Enable storage permission from settings to download image.</string>

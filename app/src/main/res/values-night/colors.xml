@@ -6,7 +6,10 @@
 
     <color name="backGroundSemiOverlay">#40000000</color>
     <color name="backGroundColorPrimary">#121212</color>
+    <color name="backGroundColorPrimaryInverse">#FFFFFF</color>
+    <color name="backGroundColorShimmerEffect">#FF424242</color>
 
+    <color name="colorDarkBackGround">#121212</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
 </resources>

@@ -32,6 +32,15 @@ class BootCompleteBroadcastReceiver : BroadcastReceiver() {
         calendar[Calendar.MILLISECOND] = 0
         calendar[Calendar.AM_PM] = if (amPM == "AM") Calendar.AM else Calendar.PM
 
+        //Checking if the selected calendar is in past or not.
+        //If it is in past than we will make it to the future. so that alarm manager does not fire for previous time
+        val currentTimeCalendar = Calendar.getInstance()
+        val alarmTimeCalendar = Calendar.getInstance()
+        alarmTimeCalendar.timeInMillis = calendar.timeInMillis
+        if (calendar.timeInMillis < currentTimeCalendar.timeInMillis) {
+            alarmTimeCalendar.add(Calendar.DATE, 1)
+        }
+
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
         val alarmIntent = Intent(context, WallPaperChangeBroadcastReceiver::class.java)
         alarmIntent.action = Constants.INTENT_ACTION_WALL_PAPER_CHANGE
@@ -42,7 +51,7 @@ class BootCompleteBroadcastReceiver : BroadcastReceiver() {
         }
         alarmManager?.setRepeating(
             AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
+            alarmTimeCalendar.timeInMillis,
             AlarmManager.INTERVAL_DAY,
             pendingIntent
         )

@@ -42,6 +42,7 @@ fun Activity.openApplicationSettings(requestCode: Int = Constants.EXTRA_ACTIVITY
 
 fun String.createClickableSpan(
     clickListener: (view: View) -> Unit,
+    linkColor: Int,
     typeface: Typeface? = null
 ): SpannableString {
     val spannableString = SpannableString(this)
@@ -52,6 +53,9 @@ fun String.createClickableSpan(
 
         override fun updateDrawState(ds: TextPaint) {
             super.updateDrawState(ds)
+            ds.linkColor = linkColor
+            ds.underlineColor = linkColor
+            ds.color = linkColor
             typeface?.let {
                 ds.typeface = it
             }

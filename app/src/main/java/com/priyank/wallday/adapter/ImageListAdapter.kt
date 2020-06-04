@@ -15,7 +15,7 @@ import com.priyank.wallday.utils.Constants
 class ImageListAdapter(private val data: List<PhotoItem>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var photoImageClickListener: PhotoImageClickListener? = null
+    private var imageClickListener: ImageClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == Constants.VIEW_TYPE_RECYCLE_ITEM) {
@@ -25,7 +25,7 @@ class ImageListAdapter(private val data: List<PhotoItem>) :
                 parent,
                 false
             )
-            return PhotoVH(v)
+            return ImageVH(v)
         } else {
             val v: ItemImageListShimmerBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
@@ -33,7 +33,7 @@ class ImageListAdapter(private val data: List<PhotoItem>) :
                 parent,
                 false
             )
-            return PhotoShimmerVH(v)
+            return ImageShimmerVH(v)
         }
     }
 
@@ -42,7 +42,7 @@ class ImageListAdapter(private val data: List<PhotoItem>) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is PhotoVH) {
+        if (holder is ImageVH) {
             val photo = data[position]
             holder.binding.photoModel = photo
 
@@ -53,7 +53,7 @@ class ImageListAdapter(private val data: List<PhotoItem>) :
                 holder.itemView.setBackgroundColor(Color.parseColor(photo.color))
 
             holder.binding.root.setOnClickListener {
-                photoImageClickListener?.onImageClick(it, photo, position)
+                imageClickListener?.onImageClick(it, photo, position)
             }
         }
     }
@@ -62,16 +62,16 @@ class ImageListAdapter(private val data: List<PhotoItem>) :
         return data.size
     }
 
-    inner class PhotoVH(val binding: ItemImageListBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ImageVH(val binding: ItemImageListBinding) : RecyclerView.ViewHolder(binding.root)
 
-    inner class PhotoShimmerVH(val binding: ItemImageListShimmerBinding) :
+    inner class ImageShimmerVH(val binding: ItemImageListShimmerBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    interface PhotoImageClickListener {
+    interface ImageClickListener {
         fun onImageClick(view: View, item: PhotoItem, position: Int)
     }
 
-    fun setPhotoImageClickListener(photoImageClickListener: PhotoImageClickListener) {
-        this.photoImageClickListener = photoImageClickListener
+    fun setPhotoImageClickListener(imageClickListener: ImageClickListener) {
+        this.imageClickListener = imageClickListener
     }
 }

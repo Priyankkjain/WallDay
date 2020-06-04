@@ -31,7 +31,7 @@ import com.priyank.wallday.viewmodel.ImageListViewModel
 import com.priyank.wallday.viewmodel.ImageViewModelFactory
 
 
-class ImageListActivity : AppCompatActivity(), ImageListAdapter.PhotoImageClickListener {
+class ImageListActivity : AppCompatActivity(), ImageListAdapter.ImageClickListener {
 
     private lateinit var binding: ActivityImageListBinding
     private var selectedImagePosition = 0
@@ -197,6 +197,7 @@ class ImageListActivity : AppCompatActivity(), ImageListAdapter.PhotoImageClickL
         when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
         }
         return super.onOptionsItemSelected(item)

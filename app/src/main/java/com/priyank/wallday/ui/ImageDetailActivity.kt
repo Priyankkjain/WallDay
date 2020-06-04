@@ -128,7 +128,7 @@ class ImageDetailActivity : AppCompatActivity() {
                     Uri.parse(getUserProfileURL())
                 )
             startActivity(browserIntent)
-        }, boldFont)
+        }, ContextCompat.getColor(this, R.color.colorWhite), boldFont)
 
         val unSplashSpan = getString(R.string.unsplash).createClickableSpan({
             it.cancelPendingInputEvents()
@@ -138,7 +138,7 @@ class ImageDetailActivity : AppCompatActivity() {
                     Uri.parse(getString(R.string.unsplash_url))
                 )
             startActivity(browserIntent)
-        }, boldFont)
+        }, ContextCompat.getColor(this, R.color.colorWhite), boldFont)
 
         binding.userName.text = getString(R.string.photo_by)
         binding.userName.append(" ")
