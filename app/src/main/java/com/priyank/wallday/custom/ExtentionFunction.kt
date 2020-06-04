@@ -1,6 +1,7 @@
 package com.priyank.wallday.custom
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -8,9 +9,13 @@ import android.provider.Settings
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
+import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import com.priyank.wallday.utils.Constants
 import com.priyank.wallday.utils.SharedPreferenceUtils
 
@@ -54,7 +59,7 @@ fun String.createClickableSpan(
         override fun updateDrawState(ds: TextPaint) {
             super.updateDrawState(ds)
             ds.linkColor = linkColor
-            ds.underlineColor = linkColor
+            ds.isUnderlineText = false
             ds.color = linkColor
             typeface?.let {
                 ds.typeface = it
@@ -69,4 +74,12 @@ fun String.createClickableSpan(
         SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
     )
     return spannableString
+}
+
+@ColorInt
+fun Context.getColorResCompat(@AttrRes id: Int): Int {
+    val resolvedAttr = TypedValue()
+    this.theme.resolveAttribute(id, resolvedAttr, true)
+    val colorRes = resolvedAttr.run { if (resourceId != 0) resourceId else data }
+    return ContextCompat.getColor(this, colorRes)
 }

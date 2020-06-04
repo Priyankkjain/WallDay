@@ -12,14 +12,13 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.observe
 import com.priyank.wallday.R
 import com.priyank.wallday.adapter.ImageWeekAdapter
 import com.priyank.wallday.base.Status
-import com.priyank.wallday.custom.getPreferenceValue
-import com.priyank.wallday.custom.savePreferenceValue
-import com.priyank.wallday.custom.showToast
+import com.priyank.wallday.custom.*
 import com.priyank.wallday.database.ImageWeek
 import com.priyank.wallday.databinding.ActivityMainBinding
 import com.priyank.wallday.receiver.WallPaperChangeBroadcastReceiver
@@ -46,8 +45,8 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
 
         val wallPaperChangingTime =
             getPreferenceValue(Constants.PREF_WALL_PAPER_CHANGING_TIME, "12:00 AM")
-        binding.wallPaperChangingTime.text =
-            getString(R.string.wall_paper_changing_time, wallPaperChangingTime)
+        changeWallpaperTimeText(wallPaperChangingTime)
+
         val hour = wallPaperChangingTime.substring(0..1)
         val minute = wallPaperChangingTime.substring(3..4)
         val amPM = wallPaperChangingTime.takeLast(2)
@@ -159,12 +158,25 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
                 Constants.PREF_WALL_PAPER_CHANGING_TIME,
                 "$storeHour:$storeMinute $storeAMPM"
             )
-            binding.wallPaperChangingTime.text =
-                getString(R.string.wall_paper_changing_time, "$storeHour:$storeMinute $storeAMPM")
+
+            val wallPaperChangingTime = "$storeHour:$storeMinute $storeAMPM"
+            changeWallpaperTimeText(wallPaperChangingTime)
 
             changeTheAlarmManager()
         }, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], false)
         timePickerDialog.show()
+    }
+
+    private fun changeWallpaperTimeText(wallPaperChangingTime: String) {
+        val boldFont =
+            ResourcesCompat.getFont(this, R.font.nunito_bold)
+        val timeSpan = wallPaperChangingTime.createClickableSpan({
+            it.cancelPendingInputEvents()
+            showTimePicker()
+        }, getColorResCompat(android.R.attr.textColorPrimary), boldFont)
+        binding.wallPaperChangingTime.text = getString(R.string.wall_paper_changing_time)
+        binding.wallPaperChangingTime.append(" ")
+        binding.wallPaperChangingTime.append(timeSpan)
     }
 
     private fun changeTheAlarmManager() {
@@ -193,6 +205,16 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
             AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
+    }
+
+    override fun onLongImageClick(item: ImageWeek, position: Int) {
+        val imageWeek = imageWeekList[position]
+        imageWeek.imagePath = ""
+        imageWeek.isImageSelected = false
+        imageWeek.authorName = ""
+        imageWeek.authorURL = ""
+        imageWeekAdapter.notifyItemChanged(position)
+        imageWeekViewModel.updateImageInWeek(imageWeek)
     }
 
     override fun onSelectImageClick(item: ImageWeek, position: Int) {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
@@ -66,6 +67,22 @@ class ImageWeekAdapter(private val context: Context, private val data: List<Imag
         holder.binding.selectImage.setOnClickListener {
             imageWeekClickListener?.onSelectImageClick(photo, position)
         }
+
+        holder.binding.imageOfTheDay.setOnClickListener {
+            if (photo.isImageSelected && !photo.imagePath.isNullOrEmpty() && !photo.imagePath.isNullOrBlank()) {
+                Toast.makeText(context, R.string.long_press_to_remove_picture, Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+
+        holder.binding.imageOfTheDay.setOnLongClickListener {
+            if (photo.isImageSelected && !photo.imagePath.isNullOrEmpty() && !photo.imagePath.isNullOrBlank()) {
+                imageWeekClickListener?.onLongImageClick(photo, position)
+                true
+            } else {
+                false
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -77,6 +94,7 @@ class ImageWeekAdapter(private val context: Context, private val data: List<Imag
 
     interface ImageWeekClickListener {
         fun onSelectImageClick(item: ImageWeek, position: Int)
+        fun onLongImageClick(item: ImageWeek, position: Int)
     }
 
     fun setImageWeekClickListener(imageWeekClickListener: ImageWeekClickListener) {
