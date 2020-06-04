@@ -125,7 +125,7 @@ class ImageDetailActivity : AppCompatActivity() {
             val browserIntent =
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse(photoItem?.user?.links?.html ?: getString(R.string.unsplash_url))
+                    Uri.parse(getUserProfileURL())
                 )
             startActivity(browserIntent)
         }, boldFont)
@@ -241,7 +241,7 @@ class ImageDetailActivity : AppCompatActivity() {
                     )
                     finalIntent.putExtra(
                         Constants.EXTRA_SELECTED_IMAGE_AUTHOR_URL,
-                        photoItem?.user?.links?.html ?: getString(R.string.unsplash_url)
+                        getUserProfileURL()
                     )
                     setResult(Activity.RESULT_OK, finalIntent)
                     onBackPressed()
@@ -257,6 +257,11 @@ class ImageDetailActivity : AppCompatActivity() {
     private fun getFileName(): String {
         val photoModel = photoItem!!
         return photoModel.user.name.plus("_" + System.currentTimeMillis()).plus(".jpg")
+    }
+
+    private fun getUserProfileURL(): String {
+        return photoItem?.user?.links?.html?.plus("?utm_source=${getString(R.string.app_name)}&utm_medium=referral")
+            ?: getString(R.string.unsplash_url)
     }
 
     @NeedsPermission(
