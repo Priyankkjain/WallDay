@@ -37,9 +37,7 @@ class WallPaperChangeBroadcastReceiver : BroadcastReceiver() {
                         WallpaperManager.getInstance(context)
                     val bitmap = BitmapFactory.decodeFile(responseModel.imagePath)
                     if (bitmap != null) {
-
                         wallpaperManager.setBitmap(bitmap)
-
                         val selectedIntent: Intent
                         val selectedMessage: String
                         if (responseModel.authorURL.isNullOrEmpty() || responseModel.authorURL.isNullOrBlank()) {

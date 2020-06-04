@@ -34,6 +34,10 @@ object NotificationUtils {
         notificationBuilder.setContentIntent(pendingIntent)
         notificationBuilder.setContentTitle(context.getString(R.string.app_name))
         notificationBuilder.setContentText(bodyOrDescription)
+        notificationBuilder.setStyle(
+            NotificationCompat.BigTextStyle()
+                .bigText(bodyOrDescription)
+        )
         notificationBuilder.color = ContextCompat.getColor(context, R.color.colorAccent)
         val notificationId = Random.nextInt()
         val notificationManager =

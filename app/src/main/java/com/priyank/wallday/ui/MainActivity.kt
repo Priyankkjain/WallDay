@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(), ImageWeekAdapter.ImageWeekClickListene
         val hour = wallPaperChangingTime.substring(0..1)
         val minute = wallPaperChangingTime.substring(3..4)
         val amPM = wallPaperChangingTime.takeLast(2)
-        calendar[Calendar.HOUR] = hour.toInt()
+        calendar[Calendar.HOUR] = if (hour.toInt() == 12) 0 else hour.toInt()
         calendar[Calendar.MINUTE] = minute.toInt()
         calendar[Calendar.SECOND] = 0
         calendar[Calendar.MILLISECOND] = 0

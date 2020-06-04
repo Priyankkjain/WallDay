@@ -21,6 +21,7 @@
     <string name="storage_permission_denied">Cannot download image. Permission denied.</string>
     <string name="enable_storage_permission_from_settings">Enable storage permission from settings to download image.</string>
     <string name="long_press_to_remove_picture">Long press on the image to remove it.</string>
+    <string name="wall_paper_changed">WallPaper changed</string>
 
     <string-array name="day_of_week">
         <item>Sunday</item>
