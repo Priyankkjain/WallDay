@@ -1,7 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="#"><img src="/art/app_icon_black.png" alt="WallDay" width="200"></a>
-  <br>
+  <a href="#"><img src="/art/app_icon_black.png" alt="WallDay Icon" width="200"></a>
   <br>
   WallDay
   <br>
@@ -12,8 +11,11 @@
 <p align="center">
   <a href="#description">Description</a> •
   <a href="#key-features">Key Features</a> •
+  <a href="#development-setup">Development Setup</a> •
   <a href="#license">License</a>
 </p>
+
+<a href="#"><img src="/art/banner.jpg" alt="WallDay Banner"></a>
 
 <br>
 
@@ -35,8 +37,15 @@ Images are fetched from the [Unsplash](https://www.unsplash.com). User can choos
 * Notifications
 * Alarm Manager
 
+## Development Setup
+
+* Android Studio 4.0 with Gradle Plugin 4.0
+* Unsplash API Key from [Unsplash Developer](https://unsplash.com/developers) Website.
+* Change the API Key in the unsplash_key.xml file in resources. 
+
 ## License
 
+```
 MIT License
 
 Copyright (c) 2020 Priyank Jain
@@ -58,3 +67,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
